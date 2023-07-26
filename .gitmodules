@@ -1,0 +1,3 @@
+[submodule "speakeasy"]
+	path = speakeasy
+	url = https://github.com/typekit/speakeasy.git
