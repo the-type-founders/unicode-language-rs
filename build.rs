@@ -47,20 +47,19 @@ impl<'de> Deserialize<'de> for Codepoint {
     }
 }
 
-fn parse_yaml<T: AsRef<Path>>(path: T) -> Result<Language, String> {
+fn parse_yaml<T: AsRef<Path>>(path: T) -> Language {
     let path = path.as_ref();
 
-    let s = read_to_string(path).expect("Could not open file.");
+    let s = read_to_string(path).unwrap();
 
     // The Serde YAML parser expects YAML types to have names that are valid
     // Rust identifiers. Sadly, that is not the case here, so we manually perform
     // a string replace to patch up the data.
-    let mut d: Language = serde_yaml::from_str(&s.replace("ruby/range", "Range"))
-        .expect("Failed to parse YAML file.");
+    let mut d: Language = serde_yaml::from_str(&s.replace("ruby/range", "Range")).unwrap();
 
     d.code = Some(
         path.file_name()
-            .expect("Could not get filename")
+            .unwrap()
             .to_os_string()
             .into_string()
             .unwrap(),
@@ -69,15 +68,14 @@ fn parse_yaml<T: AsRef<Path>>(path: T) -> Result<Language, String> {
     // Sort the codepoints so we can exit early when running the detection code.
     d.codepoints.sort_by_key(|c| c.0);
 
-    Ok(d)
+    d
 }
 
 fn main() {
     let languages: Vec<Language> = glob("./speakeasy/data/*")
-        .expect("Failed to read the speakeasy/data directory.")
-        .map(|path| path.expect("File does not exist."))
+        .unwrap()
+        .map(|path| path.unwrap())
         .map(parse_yaml)
-        .map(|language| language.expect("Failed to parse language data."))
         .collect();
 
     let ranges: Vec<Vec<Codepoint>> = languages.iter().map(|l| l.codepoints.to_vec()).collect();
@@ -196,5 +194,5 @@ const LANGUAGE_COUNT: usize = {language_count};
 const LANGUAGE_COUNT: usize = 4;
 "#
     )
-    .expect("Failed to write data file.");
+    .unwrap();
 }
