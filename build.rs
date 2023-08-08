@@ -131,7 +131,7 @@ struct Metadata {{
 }}
 
 #[cfg(not(test))]
-fn ranges() -> &'static [Vec<(u32,u32)>; {length}] {{
+fn ranges() -> &'static [Vec<(u32, u32)>; {length}] {{
   static RANGES: OnceLock<[Vec<(u32, u32)>; {length}]> = OnceLock::new();
 
   RANGES.get_or_init(|| {{
@@ -140,7 +140,7 @@ fn ranges() -> &'static [Vec<(u32,u32)>; {length}] {{
 }}
 
 #[cfg(test)]
-fn ranges() -> &'static [Vec<(u32,u32)>; 4] {{
+fn ranges() -> &'static [Vec<(u32, u32)>; 4] {{
   static RANGES: OnceLock<[Vec<(u32, u32)>; 4]> = OnceLock::new();
 
   RANGES.get_or_init(|| {{
