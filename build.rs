@@ -131,11 +131,11 @@ struct Metadata {{
 }}
 
 #[cfg(not(test))]
-fn ranges() -> &'static [Vec<(u32,u32)>; {}] {{
-  static RANGES: OnceLock<[Vec<(u32, u32)>; {}]> = OnceLock::new();
+fn ranges() -> &'static [Vec<(u32,u32)>; {length}] {{
+  static RANGES: OnceLock<[Vec<(u32, u32)>; {length}]> = OnceLock::new();
 
   RANGES.get_or_init(|| {{
-    [{}]
+    [{ranges_str}]
   }})
 }}
 
@@ -149,11 +149,11 @@ fn ranges() -> &'static [Vec<(u32,u32)>; 4] {{
 }}
 
 #[cfg(not(test))]
-fn totals() -> &'static [u32; {}] {{
-  static TOTALS: OnceLock<[u32; {}]> = OnceLock::new();
+fn totals() -> &'static [u32; {length}] {{
+  static TOTALS: OnceLock<[u32; {length}]> = OnceLock::new();
 
   TOTALS.get_or_init(|| {{
-    {}
+    {totals_str}
   }})
 }}
 
@@ -167,11 +167,11 @@ fn totals() -> &'static [u32; 4] {{
 }}
 
 #[cfg(not(test))]
-fn metadata() -> &'static [Metadata; {}] {{
-  static METADATA: OnceLock<[Metadata; {}]> = OnceLock::new();
+fn metadata() -> &'static [Metadata; {length}] {{
+  static METADATA: OnceLock<[Metadata; {length}]> = OnceLock::new();
 
   METADATA.get_or_init(|| {{
-    {}
+    {metadata_str}
   }})
 }}
 
@@ -190,21 +190,11 @@ fn metadata() -> &'static [Metadata; 4] {{
 }}
 
 #[cfg(not(test))]
-const SIZE: usize = {};
+const SIZE: usize = {length};
 
 #[cfg(test)]
 const SIZE: usize = 4;
-",
-        length,
-        length,
-        ranges_str,
-        length,
-        length,
-        totals_str,
-        length,
-        length,
-        metadata_str,
-        length
+"
     )
     .expect("Failed to write data file.");
 }
