@@ -2,11 +2,16 @@ include!(concat!(env!("OUT_DIR"), "/data.rs"));
 
 #[derive(Debug)]
 pub struct Match {
-    pub code: String,   // ISO 639-1 language codes;
-    pub name: String,   // English name;
-    pub native: String, // Name in native script;
-    pub count: u32,     // The number of codepoints matched;
-    pub score: f32, // The score (number of codepoints match divided by the total for the language).
+    /// ISO 639-1 language codes.
+    pub code: String,
+    /// English name.
+    pub name: String,
+    /// Name in native script.
+    pub native: String,
+    /// Number of codepoints matched.
+    pub count: u32,
+    /// The score (number of codepoints matches divided by the total language codepoints).
+    pub score: f32,
 }
 
 pub fn detect<T>(codepoints: T, threshold: f32) -> Vec<Match>
