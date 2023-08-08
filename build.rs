@@ -95,7 +95,7 @@ fn main() {
         })
         .collect();
 
-    let length = ranges.len();
+    let language_count = ranges.len();
 
     let ranges_str = ranges
         .iter()
@@ -131,8 +131,8 @@ struct Metadata {{
 }}
 
 #[cfg(not(test))]
-fn ranges() -> &'static [Vec<(u32, u32)>; {length}] {{
-  static RANGES: OnceLock<[Vec<(u32, u32)>; {length}]> = OnceLock::new();
+fn ranges() -> &'static [Vec<(u32, u32)>; {language_count}] {{
+  static RANGES: OnceLock<[Vec<(u32, u32)>; {language_count}]> = OnceLock::new();
 
   RANGES.get_or_init(|| {{
     [{ranges_str}]
@@ -149,8 +149,8 @@ fn ranges() -> &'static [Vec<(u32, u32)>; 4] {{
 }}
 
 #[cfg(not(test))]
-fn totals() -> &'static [u32; {length}] {{
-  static TOTALS: OnceLock<[u32; {length}]> = OnceLock::new();
+fn totals() -> &'static [u32; {language_count}] {{
+  static TOTALS: OnceLock<[u32; {language_count}]> = OnceLock::new();
 
   TOTALS.get_or_init(|| {{
     {totals_str}
@@ -167,8 +167,8 @@ fn totals() -> &'static [u32; 4] {{
 }}
 
 #[cfg(not(test))]
-fn metadata() -> &'static [Metadata; {length}] {{
-  static METADATA: OnceLock<[Metadata; {length}]> = OnceLock::new();
+fn metadata() -> &'static [Metadata; {language_count}] {{
+  static METADATA: OnceLock<[Metadata; {language_count}]> = OnceLock::new();
 
   METADATA.get_or_init(|| {{
     {metadata_str}
@@ -190,7 +190,7 @@ fn metadata() -> &'static [Metadata; 4] {{
 }}
 
 #[cfg(not(test))]
-const LANGUAGE_COUNT: usize = {length};
+const LANGUAGE_COUNT: usize = {language_count};
 
 #[cfg(test)]
 const LANGUAGE_COUNT: usize = 4;
