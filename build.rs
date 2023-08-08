@@ -1,15 +1,14 @@
-// build.rs
-
-use glob::glob;
-use serde::{de::Error, Deserialize, Deserializer};
-use serde_yaml::{self};
 use std::env;
 use std::fs::read_to_string;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
 
-#[derive(Debug, PartialEq, Clone)]
+use glob::glob;
+use serde::{de::Error, Deserialize, Deserializer};
+use serde_yaml::{self};
+
+#[derive(Clone, Debug, PartialEq)]
 struct Codepoint(i32, i32);
 
 impl<'de> Deserialize<'de> for Codepoint {
