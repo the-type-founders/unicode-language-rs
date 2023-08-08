@@ -11,6 +11,22 @@ use serde_yaml::{self};
 #[derive(Clone, Debug, PartialEq)]
 struct Codepoint(i32, i32);
 
+#[derive(Debug, Deserialize)]
+struct Language {
+    //    version: String,
+    anglicized_name: String,
+    native_name: String,
+    codepoints: Vec<Codepoint>,
+    code: Option<String>,
+}
+
+#[derive(Debug)]
+pub struct Metadata {
+    pub code: String,
+    pub name: String,
+    pub native_name: String,
+}
+
 impl<'de> Deserialize<'de> for Codepoint {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -30,15 +46,6 @@ impl<'de> Deserialize<'de> for Codepoint {
                 .map_err(D::Error::custom)
         }
     }
-}
-
-#[derive(Debug, Deserialize)]
-struct Language {
-    //    version: String,
-    anglicized_name: String,
-    native_name: String,
-    codepoints: Vec<Codepoint>,
-    code: Option<String>,
 }
 
 fn parse_yaml<T: AsRef<Path>>(path: T) -> Result<Language, String> {
@@ -64,13 +71,6 @@ fn parse_yaml<T: AsRef<Path>>(path: T) -> Result<Language, String> {
     d.codepoints.sort_by_key(|c| c.0);
 
     Ok(d)
-}
-
-#[derive(Debug)]
-pub struct Metadata {
-    pub code: String,
-    pub name: String,
-    pub native_name: String,
 }
 
 fn main() {
