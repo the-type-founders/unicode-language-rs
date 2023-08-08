@@ -190,10 +190,10 @@ fn metadata() -> &'static [Metadata; 4] {{
 }}
 
 #[cfg(not(test))]
-const SIZE: usize = {length};
+const LANGUAGE_COUNT: usize = {length};
 
 #[cfg(test)]
-const SIZE: usize = 4;
+const LANGUAGE_COUNT: usize = 4;
 "#
     )
     .expect("Failed to write data file.");

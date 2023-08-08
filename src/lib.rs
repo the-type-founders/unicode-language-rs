@@ -18,11 +18,11 @@ pub fn detect<T>(codepoints: T, threshold: f32) -> Vec<Match>
 where
     T: IntoIterator<Item = u32>,
 {
-    let mut counts = [0; SIZE];
+    let mut counts = [0; LANGUAGE_COUNT];
     let ranges = ranges();
 
     for value in codepoints {
-        for i in 0..SIZE {
+        for i in 0..LANGUAGE_COUNT {
             for k in 0..ranges[i].len() {
                 if value >= ranges[i][k].0 && value <= ranges[i][k].1 {
                     counts[i] += 1;
@@ -39,7 +39,7 @@ where
     let metadata = metadata();
     let mut result: Vec<Match> = Vec::new();
 
-    for i in 0..SIZE {
+    for i in 0..LANGUAGE_COUNT {
         let score = counts[i] as f32 / totals[i] as f32;
         if score >= threshold && counts[i] > 0 {
             result.push(Match {
