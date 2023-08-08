@@ -16,49 +16,39 @@ pub struct Match {
     pub score: f32,
 }
 
-/// A Unicode codepoint
-pub type Codepoint = u32;
-
-/// A range of Unicode codepoints.
-pub type Range<T> = [T; 2];
-
 pub fn detect<T>(codepoints: T, threshold: f32) -> Vec<Match>
 where
     T: IntoIterator<Item = Range<Codepoint>>,
 {
     let mut counts = [0; LANGUAGE_COUNT];
-    let ranges = ranges();
 
     for [input_lower, input_upper] in codepoints {
         for i in 0..LANGUAGE_COUNT {
-            for k in 0..ranges[i].len() {
-                let (range_lower, range_upper) = ranges[i][k];
-
-                if input_lower >= range_lower && input_lower <= range_upper
-                    || input_upper >= range_lower && input_upper <= range_upper
+            for [range_lower, range_upper] in RANGES[i] {
+                if input_lower.ge(range_lower) && input_lower.le(range_upper)
+                    || input_upper.ge(range_lower) && input_upper.le(range_upper)
                 {
-                    counts[i] +=
-                        cmp::min(input_upper, range_upper) - cmp::max(input_lower, range_lower) + 1;
+                    counts[i] += cmp::min(input_upper, *range_upper)
+                        - cmp::max(input_lower, *range_lower)
+                        + 1;
                 }
 
-                if range_lower > input_lower {
+                if input_lower.lt(range_lower) {
                     break;
                 }
             }
         }
     }
 
-    let totals = totals();
-    let metadata = metadata();
     let mut result: Vec<Match> = Vec::new();
 
     for i in 0..LANGUAGE_COUNT {
-        let score = counts[i] as f32 / totals[i] as f32;
+        let score = counts[i] as f32 / TOTALS[i] as f32;
         if score >= threshold && counts[i] > 0 {
             result.push(Match {
-                code: metadata[i].code.to_string(),
-                name: metadata[i].name.to_string(),
-                native: metadata[i].native_name.to_string(),
+                code: METADATA[i].code.to_string(),
+                name: METADATA[i].name.to_string(),
+                native: METADATA[i].native_name.to_string(),
                 count: counts[i],
                 score,
             });

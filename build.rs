@@ -99,10 +99,10 @@ fn main() {
         .iter()
         .map(|ranges| {
             format!(
-                "vec![{}]",
+                "&[{}]",
                 ranges
                     .iter()
-                    .map(|c| format!("({},{})", c.0, c.1))
+                    .map(|c| format!("[{}, {}]", c.0, c.1))
                     .collect::<Vec<_>>()
                     .join(", ")
             )
@@ -120,7 +120,11 @@ fn main() {
     write!(
         f,
         r#"
-use std::sync::OnceLock;
+/// A Unicode codepoint
+pub type Codepoint = u32;
+
+/// A range of Unicode codepoints.
+pub type Range<T> = [T; 2];
 
 struct Metadata {{
     code: &'static str,
@@ -129,69 +133,33 @@ struct Metadata {{
 }}
 
 #[cfg(not(test))]
-fn ranges() -> &'static [Vec<(u32, u32)>; {language_count}] {{
-  static RANGES: OnceLock<[Vec<(u32, u32)>; {language_count}]> = OnceLock::new();
-
-  RANGES.get_or_init(|| {{
-    [{ranges_str}]
-  }})
-}}
-
-#[cfg(test)]
-fn ranges() -> &'static [Vec<(u32, u32)>; 4] {{
-  static RANGES: OnceLock<[Vec<(u32, u32)>; 4]> = OnceLock::new();
-
-  RANGES.get_or_init(|| {{
-    [vec![(1, 3)], vec![(4, 6)], vec![(7, 9)], vec![(8, 8)]]
-  }})
-}}
-
-#[cfg(not(test))]
-fn totals() -> &'static [u32; {language_count}] {{
-  static TOTALS: OnceLock<[u32; {language_count}]> = OnceLock::new();
-
-  TOTALS.get_or_init(|| {{
-    {totals_str}
-  }})
-}}
-
-#[cfg(test)]
-fn totals() -> &'static [u32; 4] {{
-  static TOTALS: OnceLock<[u32; 4]> = OnceLock::new();
-
-  TOTALS.get_or_init(|| {{
-    [3, 3, 3, 1]
-  }})
-}}
-
-#[cfg(not(test))]
-fn metadata() -> &'static [Metadata; {language_count}] {{
-  static METADATA: OnceLock<[Metadata; {language_count}]> = OnceLock::new();
-
-  METADATA.get_or_init(|| {{
-    {metadata_str}
-  }})
-}}
-
-#[cfg(test)]
-fn metadata() -> &'static [Metadata; 4] {{
-  static METADATA: OnceLock<[Metadata; 4]> = OnceLock::new();
-
-  METADATA.get_or_init(|| {{
-    [
-      Metadata {{ code: "t1", name: "test1", native_name: "ntest1" }},
-      Metadata {{ code: "t2", name: "test2", native_name: "ntest2" }},
-      Metadata {{ code: "t3", name: "test3", native_name: "ntest3" }},
-      Metadata {{ code: "t4", name: "test4", native_name: "ntest4" }},
-    ]
-  }})
-}}
-
-#[cfg(not(test))]
 const LANGUAGE_COUNT: usize = {language_count};
 
 #[cfg(test)]
 const LANGUAGE_COUNT: usize = 4;
+
+#[cfg(not(test))]
+const RANGES: [&[Range<Codepoint>]; LANGUAGE_COUNT] = [{ranges_str}];
+
+#[cfg(test)]
+const RANGES: [&[Range<Codepoint>]; LANGUAGE_COUNT] = [&[[1, 3]], &[[4, 6]], &[[7, 9]], &[[8, 8]]];
+
+#[cfg(not(test))]
+const TOTALS: [u32; LANGUAGE_COUNT] = {totals_str};
+
+#[cfg(test)]
+const TOTALS: [u32; LANGUAGE_COUNT] = [3, 3, 3, 1];
+
+#[cfg(not(test))]
+const METADATA: [Metadata; LANGUAGE_COUNT] = {metadata_str};
+
+#[cfg(test)]
+const METADATA: [Metadata; LANGUAGE_COUNT] = [
+  Metadata {{ code: "t1", name: "test1", native_name: "ntest1" }},
+  Metadata {{ code: "t2", name: "test2", native_name: "ntest2" }},
+  Metadata {{ code: "t3", name: "test3", native_name: "ntest3" }},
+  Metadata {{ code: "t4", name: "test4", native_name: "ntest4" }},
+];
 "#
     )
     .unwrap();
