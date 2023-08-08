@@ -8,12 +8,7 @@ build = "build.rs"
 name = "detectlanguage"
 path = "src/lib.rs"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-
 [build-dependencies]
 glob = "0.3.1"
 serde = { version = "1.0.175", features = ["derive"] }
 serde_yaml = "0.9.25"
-
