@@ -121,7 +121,7 @@ fn main() {
 
     write!(
         f,
-        "
+        r#"
 use std::sync::OnceLock;
 
 struct Metadata {{
@@ -181,10 +181,10 @@ fn metadata() -> &'static [Metadata; 4] {{
 
   METADATA.get_or_init(|| {{
     [
-      Metadata {{ code: \"t1\", name: \"test1\", native_name: \"ntest1\" }},
-      Metadata {{ code: \"t2\", name: \"test2\", native_name: \"ntest2\" }},
-      Metadata {{ code: \"t3\", name: \"test3\", native_name: \"ntest3\" }},
-      Metadata {{ code: \"t4\", name: \"test4\", native_name: \"ntest4\" }},
+      Metadata {{ code: "t1", name: "test1", native_name: "ntest1" }},
+      Metadata {{ code: "t2", name: "test2", native_name: "ntest2" }},
+      Metadata {{ code: "t3", name: "test3", native_name: "ntest3" }},
+      Metadata {{ code: "t4", name: "test4", native_name: "ntest4" }},
     ]
   }})
 }}
@@ -194,7 +194,7 @@ const SIZE: usize = {length};
 
 #[cfg(test)]
 const SIZE: usize = 4;
-"
+"#
     )
     .expect("Failed to write data file.");
 }
