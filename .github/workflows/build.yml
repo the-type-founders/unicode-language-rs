@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: true
       - uses: actions-rs/toolchain@v1
         with: { toolchain: stable, components: clippy, rustfmt }
       - run: make check
@@ -25,6 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: true
       - uses: actions-rs/toolchain@v1
         with: { toolchain: stable }
       - run: make test
