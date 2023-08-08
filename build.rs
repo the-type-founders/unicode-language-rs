@@ -9,13 +9,13 @@ use serde::{de::Error, Deserialize, Deserializer};
 use serde_yaml::{self};
 
 #[derive(Clone, Debug, PartialEq)]
-struct Codepoint(u32, u32);
+struct Range(u32, u32);
 
 #[derive(Debug, Deserialize)]
 struct Language {
     anglicized_name: String,
     native_name: String,
-    codepoints: Vec<Codepoint>,
+    codepoints: Vec<Range>,
     code: Option<String>,
 }
 
@@ -26,7 +26,7 @@ pub struct Metadata {
     pub native_name: String,
 }
 
-impl<'de> Deserialize<'de> for Codepoint {
+impl<'de> Deserialize<'de> for Range {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -37,11 +37,11 @@ impl<'de> Deserialize<'de> for Codepoint {
             s.split("..")
                 .map(|x| x.parse::<u32>())
                 .collect::<Result<Vec<_>, _>>()
-                .map(|v| Codepoint(v[0], v[1]))
+                .map(|v| Range(v[0], v[1]))
                 .map_err(D::Error::custom)
         } else {
             s.parse::<u32>()
-                .map(|i| Codepoint(i, i))
+                .map(|i| Range(i, i))
                 .map_err(D::Error::custom)
         }
     }
@@ -65,7 +65,7 @@ fn parse_yaml<T: AsRef<Path>>(path: T) -> Language {
             .unwrap(),
     );
 
-    // Sort the codepoints so we can exit early when running the detection code.
+    // Sort the ranges so we can exit early when running the detection code.
     d.codepoints.sort_by_key(|c| c.0);
 
     d
@@ -78,10 +78,10 @@ fn main() {
         .map(parse_yaml)
         .collect();
 
-    let ranges: Vec<Vec<Codepoint>> = languages.iter().map(|l| l.codepoints.to_vec()).collect();
+    let ranges: Vec<Vec<Range>> = languages.iter().map(|l| l.codepoints.to_vec()).collect();
     let totals: Vec<u32> = ranges
         .iter()
-        .map(|codepoints| codepoints.iter().map(|c| c.1 - c.0 + 1).sum::<u32>())
+        .map(|ranges| ranges.iter().map(|c| c.1 - c.0 + 1).sum::<u32>())
         .collect();
 
     let metadata: Vec<Metadata> = languages
@@ -97,10 +97,10 @@ fn main() {
 
     let ranges_str = ranges
         .iter()
-        .map(|codepoints| {
+        .map(|ranges| {
             format!(
                 "vec![{}]",
-                codepoints
+                ranges
                     .iter()
                     .map(|c| format!("({},{})", c.0, c.1))
                     .collect::<Vec<_>>()
