@@ -5,13 +5,13 @@ pub struct Match {
     pub code: String,   // ISO 639-1 language codes;
     pub name: String,   // English name;
     pub native: String, // Name in native script;
-    pub count: i32,     // The number of codepoints matched;
+    pub count: u32,     // The number of codepoints matched;
     pub score: f32, // The score (number of codepoints match divided by the total for the language).
 }
 
 pub fn detect<T>(codepoints: T, threshold: f32) -> Vec<Match>
 where
-    T: IntoIterator<Item = i32>,
+    T: IntoIterator<Item = u32>,
 {
     let mut counts = [0; SIZE];
     let ranges = ranges();

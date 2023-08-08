@@ -9,7 +9,7 @@ use serde::{de::Error, Deserialize, Deserializer};
 use serde_yaml::{self};
 
 #[derive(Clone, Debug, PartialEq)]
-struct Codepoint(i32, i32);
+struct Codepoint(u32, u32);
 
 #[derive(Debug, Deserialize)]
 struct Language {
@@ -35,12 +35,12 @@ impl<'de> Deserialize<'de> for Codepoint {
 
         if s.contains("..") {
             s.split("..")
-                .map(|x| x.parse::<i32>())
+                .map(|x| x.parse::<u32>())
                 .collect::<Result<Vec<_>, _>>()
                 .map(|v| Codepoint(v[0], v[1]))
                 .map_err(D::Error::custom)
         } else {
-            s.parse::<i32>()
+            s.parse::<u32>()
                 .map(|i| Codepoint(i, i))
                 .map_err(D::Error::custom)
         }
@@ -81,9 +81,9 @@ fn main() {
         .collect();
 
     let ranges: Vec<Vec<Codepoint>> = languages.iter().map(|l| l.codepoints.to_vec()).collect();
-    let totals: Vec<i32> = ranges
+    let totals: Vec<u32> = ranges
         .iter()
-        .map(|codepoints| codepoints.iter().map(|c| c.1 - c.0 + 1).sum::<i32>())
+        .map(|codepoints| codepoints.iter().map(|c| c.1 - c.0 + 1).sum::<u32>())
         .collect();
 
     let metadata: Vec<Metadata> = languages
@@ -131,8 +131,8 @@ struct Metadata {{
 }}
 
 #[cfg(not(test))]
-fn ranges() -> &'static [Vec<(i32,i32)>; {}] {{
-  static RANGES: OnceLock<[Vec<(i32, i32)>; {}]> = OnceLock::new();
+fn ranges() -> &'static [Vec<(u32,u32)>; {}] {{
+  static RANGES: OnceLock<[Vec<(u32, u32)>; {}]> = OnceLock::new();
 
   RANGES.get_or_init(|| {{
     [{}]
@@ -140,8 +140,8 @@ fn ranges() -> &'static [Vec<(i32,i32)>; {}] {{
 }}
 
 #[cfg(test)]
-fn ranges() -> &'static [Vec<(i32,i32)>; 4] {{
-  static RANGES: OnceLock<[Vec<(i32, i32)>; 4]> = OnceLock::new();
+fn ranges() -> &'static [Vec<(u32,u32)>; 4] {{
+  static RANGES: OnceLock<[Vec<(u32, u32)>; 4]> = OnceLock::new();
 
   RANGES.get_or_init(|| {{
     [vec![(1, 3)], vec![(4, 6)], vec![(7, 9)], vec![(8, 8)]]
@@ -149,8 +149,8 @@ fn ranges() -> &'static [Vec<(i32,i32)>; 4] {{
 }}
 
 #[cfg(not(test))]
-fn totals() -> &'static [i32; {}] {{
-  static TOTALS: OnceLock<[i32; {}]> = OnceLock::new();
+fn totals() -> &'static [u32; {}] {{
+  static TOTALS: OnceLock<[u32; {}]> = OnceLock::new();
 
   TOTALS.get_or_init(|| {{
     {}
@@ -158,8 +158,8 @@ fn totals() -> &'static [i32; {}] {{
 }}
 
 #[cfg(test)]
-fn totals() -> &'static [i32; 4] {{
-  static TOTALS: OnceLock<[i32; 4]> = OnceLock::new();
+fn totals() -> &'static [u32; 4] {{
+  static TOTALS: OnceLock<[u32; 4]> = OnceLock::new();
 
   TOTALS.get_or_init(|| {{
     [3, 3, 3, 1]
