@@ -1,5 +1,7 @@
 include!(concat!(env!("OUT_DIR"), "/data.rs"));
 
+use std::cmp;
+
 #[derive(Debug)]
 pub struct Match {
     /// ISO 639-1 language codes.
@@ -14,21 +16,32 @@ pub struct Match {
     pub score: f32,
 }
 
+/// A Unicode codepoint
+pub type Codepoint = u32;
+
+/// A range of Unicode codepoints.
+pub type Range<T> = [T; 2];
+
 pub fn detect<T>(codepoints: T, threshold: f32) -> Vec<Match>
 where
-    T: IntoIterator<Item = u32>,
+    T: IntoIterator<Item = Range<Codepoint>>,
 {
     let mut counts = [0; LANGUAGE_COUNT];
     let ranges = ranges();
 
-    for value in codepoints {
+    for [input_lower, input_upper] in codepoints {
         for i in 0..LANGUAGE_COUNT {
             for k in 0..ranges[i].len() {
-                if value >= ranges[i][k].0 && value <= ranges[i][k].1 {
-                    counts[i] += 1;
+                let (range_lower, range_upper) = ranges[i][k];
+
+                if input_lower >= range_lower && input_lower <= range_upper
+                    || input_upper >= range_lower && input_upper <= range_upper
+                {
+                    counts[i] +=
+                        cmp::min(input_upper, range_upper) - cmp::max(input_lower, range_lower) + 1;
                 }
 
-                if ranges[i][k].0 > value {
+                if range_lower > input_lower {
                     break;
                 }
             }
@@ -69,13 +82,13 @@ mod tests {
 
     #[test]
     fn it_returns_an_empty_array_with_an_invalid_codepoint() {
-        let result = detect([256], 0.5);
+        let result = detect([[256, 256]], 0.5);
         assert_eq!(result.len(), 0);
     }
 
     #[test]
     fn it_returns_the_test_language() {
-        let result = detect([1], 0.0);
+        let result = detect([[1, 1]], 0.0);
         assert_eq!(result.len(), 1);
         assert_eq!(result[0].code, "t1");
         assert_eq!(result[0].name, "test1")
@@ -83,13 +96,13 @@ mod tests {
 
     #[test]
     fn it_does_not_return_if_threshold_not_met() {
-        let result = detect([1, 2], 1.0);
+        let result = detect([[1, 2]], 1.0);
         assert_eq!(result.len(), 0);
     }
 
     #[test]
     fn it_returns_if_threshold_is_met() {
-        let result = detect([1, 2, 3], 1.0);
+        let result = detect([[1, 3]], 1.0);
         assert_eq!(result.len(), 1);
         assert_eq!(result[0].code, "t1");
         assert_eq!(result[0].name, "test1");
@@ -97,7 +110,7 @@ mod tests {
 
     #[test]
     fn it_returns_if_threshold_is_partially_met() {
-        let result = detect([1, 2], 0.6);
+        let result = detect([[1, 2]], 0.6);
         assert_eq!(result.len(), 1);
         assert_eq!(result[0].code, "t1");
         assert_eq!(result[0].name, "test1");
@@ -105,7 +118,7 @@ mod tests {
 
     #[test]
     fn it_returns_multiple_languages() {
-        let result = detect([1, 4], 0.0);
+        let result = detect([[1, 1], [4, 4]], 0.0);
         assert_eq!(result.len(), 2);
         assert_eq!(result[0].code, "t1");
         assert_eq!(result[0].name, "test1");
@@ -115,7 +128,7 @@ mod tests {
 
     #[test]
     fn it_returns_overlapping_languages() {
-        let result = detect([8], 0.0);
+        let result = detect([[8, 8]], 0.0);
         assert_eq!(result.len(), 2);
         assert_eq!(result[0].code, "t3");
         assert_eq!(result[0].name, "test3");
