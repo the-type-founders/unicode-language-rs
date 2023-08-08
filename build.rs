@@ -13,7 +13,6 @@ struct Codepoint(i32, i32);
 
 #[derive(Debug, Deserialize)]
 struct Language {
-    //    version: String,
     anglicized_name: String,
     native_name: String,
     codepoints: Vec<Codepoint>,
