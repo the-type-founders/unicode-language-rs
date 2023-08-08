@@ -73,10 +73,6 @@ fn parse_yaml<T: AsRef<Path>>(path: T) -> Result<Language, String> {
 }
 
 fn main() {
-    let out_dir = env::var("OUT_DIR").unwrap();
-    let dest_path = Path::new(&out_dir).join("data.rs");
-    let mut f = File::create(dest_path).unwrap();
-
     let languages: Vec<Language> = glob("./speakeasy/data/*")
         .expect("Failed to read the speakeasy/data directory.")
         .map(|path| path.expect("File does not exist."))
@@ -118,6 +114,10 @@ fn main() {
 
     let totals_str = format!("{:?}", totals);
     let metadata_str = format!("{:?}", metadata);
+
+    let out_dir = env::var("OUT_DIR").unwrap();
+    let dest_path = Path::new(&out_dir).join("data.rs");
+    let mut f = File::create(dest_path).unwrap();
 
     write!(
         f,
