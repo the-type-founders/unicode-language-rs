@@ -4,7 +4,7 @@ use std::cmp;
 
 #[derive(Debug)]
 pub struct Match {
-    /// ISO 639-1 language codes.
+    /// ISO 639-1 language code.
     pub code: String,
     /// English name.
     pub name: String,
