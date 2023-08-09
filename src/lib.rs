@@ -125,4 +125,16 @@ mod tests {
         assert_eq!(result[1].code, "t4");
         assert_eq!(result[1].name, "test4");
     }
+
+    #[test]
+    fn it_returns_correct_counts_on_partial_range_matches() {
+        let result = detect([[3, 5]], 0.0);
+        assert_eq!(result.len(), 2);
+        assert_eq!(result[0].code, "t1");
+        assert_eq!(result[0].name, "test1");
+        assert_eq!(result[0].count, 1);
+        assert_eq!(result[1].code, "t2");
+        assert_eq!(result[1].name, "test2");
+        assert_eq!(result[1].count, 2);
+    }
 }
