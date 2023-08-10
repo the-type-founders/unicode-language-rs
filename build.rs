@@ -26,10 +26,10 @@ pub struct Metadata {
     pub native_name: String,
 }
 
-impl<'de> Deserialize<'de> for Range {
+impl<'l> Deserialize<'l> for Range {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: Deserializer<'de>,
+        D: Deserializer<'l>,
     {
         let s: &str = Deserialize::deserialize(deserializer)?;
 
