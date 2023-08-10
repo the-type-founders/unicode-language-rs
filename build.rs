@@ -27,9 +27,9 @@ pub struct Metadata {
 }
 
 impl<'l> Deserialize<'l> for Range {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<T>(deserializer: T) -> Result<Self, T::Error>
     where
-        D: Deserializer<'l>,
+        T: Deserializer<'l>,
     {
         let s: &str = Deserialize::deserialize(deserializer)?;
 
@@ -38,11 +38,11 @@ impl<'l> Deserialize<'l> for Range {
                 .map(|x| x.parse::<u32>())
                 .collect::<Result<Vec<_>, _>>()
                 .map(|v| Range(v[0], v[1]))
-                .map_err(D::Error::custom)
+                .map_err(T::Error::custom)
         } else {
             s.parse::<u32>()
                 .map(|i| Range(i, i))
-                .map_err(D::Error::custom)
+                .map_err(T::Error::custom)
         }
     }
 }
