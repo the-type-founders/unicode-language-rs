@@ -74,7 +74,7 @@ fn parse_yaml<T: AsRef<Path>>(path: T) -> Language {
 fn main() {
     let languages: Vec<Language> = glob("./speakeasy/data/*")
         .unwrap()
-        .map(|path| path.unwrap())
+        .map(Result::unwrap)
         .map(parse_yaml)
         .collect();
 
