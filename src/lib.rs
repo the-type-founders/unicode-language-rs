@@ -52,7 +52,7 @@ where
         }
     }
 
-    let mut result: Vec<Match> = Vec::new();
+    let mut result = Vec::new();
 
     for i in 0..LANGUAGE_COUNT {
         let score = counts[i] as f32 / TOTALS[i] as f32;
