@@ -6,7 +6,6 @@ use std::path::Path;
 
 use glob::glob;
 use serde::{de::Error, Deserialize, Deserializer};
-use serde_yaml::{self};
 
 #[derive(Clone, Debug, PartialEq)]
 struct Range(u32, u32);
