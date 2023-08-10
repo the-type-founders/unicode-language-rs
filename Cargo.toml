@@ -1,11 +1,11 @@
 [package]
-name = "detect-language"
+name = "unicode-language"
 version = "0.1.0"
 edition = "2021"
 build = "build.rs"
 
 [lib]
-name = "detectlanguage"
+name = "unicodelanguage"
 path = "src/lib.rs"
 
 [build-dependencies]
