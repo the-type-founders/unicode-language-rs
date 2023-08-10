@@ -37,15 +37,15 @@ where
     for [input_lower, input_upper] in codepoints {
         for i in 0..LANGUAGE_COUNT {
             for [range_lower, range_upper] in RANGES[i] {
-                if input_lower.ge(range_lower) && input_lower.le(range_upper)
-                    || input_upper.ge(range_lower) && input_upper.le(range_upper)
+                if input_lower >= *range_lower && input_lower <= *range_upper
+                    || input_upper >= *range_lower && input_upper <= *range_upper
                 {
                     counts[i] += cmp::min(input_upper, *range_upper)
                         - cmp::max(input_lower, *range_lower)
                         + 1;
                 }
 
-                if input_upper.le(range_upper) {
+                if input_upper <= *range_upper {
                     break;
                 }
             }
