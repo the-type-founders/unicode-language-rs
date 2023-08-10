@@ -12,10 +12,22 @@ pub struct Match {
     pub native: String,
     /// Number of codepoints matched.
     pub count: u32,
-    /// The score (number of codepoints matches divided by the total language codepoints).
+    /// Score (number of codepoints matched divided by the total).
     pub score: f32,
 }
 
+/// Detects language support in a font given a list of Unicode
+/// codepoint ranges.
+///
+/// # Arguments
+///
+/// * `codepoints` - An iterator of codepoint ranges. The iterator
+///   must not contain overlapping ranges and must be sorted in
+///   ascending order.
+/// * `threshold` - The minimum score a language must have to be
+/// returned as a match. Value must be between 0 and 1.
+///
+/// Returns a vector of language matches.
 pub fn detect<T>(codepoints: T, threshold: f32) -> Vec<Match>
 where
     T: IntoIterator<Item = Range<Codepoint>>,
