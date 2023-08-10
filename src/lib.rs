@@ -45,7 +45,7 @@ where
                         + 1;
                 }
 
-                if input_lower.lt(range_lower) {
+                if input_upper.le(range_upper) {
                     break;
                 }
             }
