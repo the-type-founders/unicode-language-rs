@@ -110,9 +110,6 @@ fn main() {
         .collect::<Vec<_>>()
         .join(", ");
 
-    let totals_str = format!("{:?}", totals);
-    let metadata_str = format!("{:?}", metadata);
-
     let out_dir = env::var("OUT_DIR").unwrap();
     let dest_path = Path::new(&out_dir).join("data.rs");
     let mut f = File::create(dest_path).unwrap();
@@ -145,13 +142,13 @@ const RANGES: [&[Range<Codepoint>]; LANGUAGE_COUNT] = [{ranges_str}];
 const RANGES: [&[Range<Codepoint>]; LANGUAGE_COUNT] = [&[[1, 3]], &[[4, 6]], &[[7, 9]], &[[8, 8]]];
 
 #[cfg(not(test))]
-const TOTALS: [u32; LANGUAGE_COUNT] = {totals_str};
+const TOTALS: [u32; LANGUAGE_COUNT] = {totals:?};
 
 #[cfg(test)]
 const TOTALS: [u32; LANGUAGE_COUNT] = [3, 3, 3, 1];
 
 #[cfg(not(test))]
-const METADATA: [Metadata; LANGUAGE_COUNT] = {metadata_str};
+const METADATA: [Metadata; LANGUAGE_COUNT] = {metadata:?};
 
 #[cfg(test)]
 const METADATA: [Metadata; LANGUAGE_COUNT] = [
