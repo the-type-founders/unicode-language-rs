@@ -85,7 +85,7 @@ fn main() {
         .collect();
 
     let metadata: Vec<Metadata> = languages
-        .iter()
+        .into_iter()
         .map(|l| Metadata {
             code: l.code.as_ref().unwrap().clone(),
             name: l.anglicized_name.clone(),
