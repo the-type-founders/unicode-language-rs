@@ -3,6 +3,10 @@ name = "unicode-language"
 version = "0.1.0"
 edition = "2021"
 build = "build.rs"
+license = "Apache-2.0"
+keywords = ["unicode", "language"]
+description = "A library to detect language coverage given a list of codepoints."
+authors = ["Bram Stein <b.l.stein@gmail.com>"]
 
 [lib]
 name = "unicodelanguage"
