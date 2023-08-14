@@ -35,4 +35,4 @@ The language data is derived from [Adobe Font's speakeasy library](https://githu
 
 ## License
 
-This library is licensed under the Apache-2.0 license. Copyright 2023, The Type Founders.
+This library is licensed under the Apache-2.0 license. Copyright 2023, [The Type Founders](https://thetypefounders.com).
