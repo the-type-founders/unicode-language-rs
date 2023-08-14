@@ -7,6 +7,7 @@ license = "Apache-2.0"
 keywords = ["unicode", "language"]
 description = "A library to detect language coverage given a list of codepoints."
 authors = ["Bram Stein <b.l.stein@gmail.com>"]
+repository = "https://github.com/the-type-founders/unicode-language-rs/"
 
 [lib]
 name = "unicodelanguage"
