@@ -67,7 +67,7 @@ where
         }
     }
 
-    result.sort_by(|a, b| a.score.partial_cmp(&b.score).unwrap());
+    result.sort_by(|a, b| a.score.partial_cmp(&b.score).unwrap().reverse());
 
     result
 }
@@ -80,6 +80,26 @@ mod tests {
     fn it_returns_an_empty_array() {
         let result = detect([], 0.5);
         assert_eq!(result.len(), 0);
+    }
+
+    #[test]
+    fn it_takes_a_vector() {
+        let codepoints = vec![[1, 3]];
+
+        let result = detect(codepoints, 1.0);
+        assert_eq!(result.len(), 1);
+        assert_eq!(result[0].code, "t1");
+        assert_eq!(result[0].name, "test1");
+    }
+
+    #[test]
+    fn it_takes_an_array() {
+        let codepoints = [[1, 3]];
+
+        let result = detect(codepoints, 1.0);
+        assert_eq!(result.len(), 1);
+        assert_eq!(result[0].code, "t1");
+        assert_eq!(result[0].name, "test1");
     }
 
     #[test]
@@ -132,21 +152,29 @@ mod tests {
     fn it_returns_overlapping_languages() {
         let result = detect([[8, 8]], 0.0);
         assert_eq!(result.len(), 2);
-        assert_eq!(result[0].code, "t3");
-        assert_eq!(result[0].name, "test3");
-        assert_eq!(result[1].code, "t4");
-        assert_eq!(result[1].name, "test4");
+        assert_eq!(result[0].code, "t4");
+        assert_eq!(result[0].name, "test4");
+        assert_eq!(result[1].code, "t3");
+        assert_eq!(result[1].name, "test3");
     }
 
     #[test]
     fn it_returns_correct_counts_on_partial_range_matches() {
         let result = detect([[3, 5]], 0.0);
         assert_eq!(result.len(), 2);
-        assert_eq!(result[0].code, "t1");
-        assert_eq!(result[0].name, "test1");
-        assert_eq!(result[0].count, 1);
-        assert_eq!(result[1].code, "t2");
-        assert_eq!(result[1].name, "test2");
-        assert_eq!(result[1].count, 2);
+        assert_eq!(result[0].code, "t2");
+        assert_eq!(result[0].name, "test2");
+        assert_eq!(result[0].count, 2);
+        assert_eq!(result[1].code, "t1");
+        assert_eq!(result[1].name, "test1");
+        assert_eq!(result[1].count, 1);
+    }
+
+    #[test]
+    fn it_returns_sorted_results() {
+        let result = detect([[1, 1], [4, 6]], 0.0);
+        assert_eq!(result.len(), 2);
+        assert_eq!(result[0].code, "t2");
+        assert_eq!(result[1].code, "t1");
     }
 }
