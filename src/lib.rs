@@ -13,7 +13,7 @@ pub struct Match {
     /// Number of codepoints matched.
     pub count: u32,
     /// Score (number of codepoints matched divided by the total).
-    pub score: f32,
+    pub score: f64,
 }
 
 /// Detects language support in a font given a list of Unicode
@@ -28,7 +28,7 @@ pub struct Match {
 /// returned as a match. Value must be between 0 and 1.
 ///
 /// Returns a vector of language matches.
-pub fn detect<T>(codepoints: T, threshold: f32) -> Vec<Match>
+pub fn detect<T>(codepoints: T, threshold: f64) -> Vec<Match>
 where
     T: IntoIterator<Item = Range<Codepoint>>,
 {
@@ -55,7 +55,7 @@ where
     let mut result = Vec::new();
 
     for i in 0..LANGUAGE_COUNT {
-        let score = counts[i] as f32 / TOTALS[i] as f32;
+        let score = counts[i] as f64 / TOTALS[i] as f64;
         if score >= threshold && counts[i] > 0 {
             result.push(Match {
                 code: METADATA[i].code.to_string(),
