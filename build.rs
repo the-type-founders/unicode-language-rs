@@ -132,19 +132,19 @@ struct Metadata {{
 const LANGUAGE_COUNT: usize = {language_count};
 
 #[cfg(test)]
-const LANGUAGE_COUNT: usize = 4;
+const LANGUAGE_COUNT: usize = 5;
 
 #[cfg(not(test))]
 const RANGES: [&[Range<Codepoint>]; LANGUAGE_COUNT] = [{ranges_str}];
 
 #[cfg(test)]
-const RANGES: [&[Range<Codepoint>]; LANGUAGE_COUNT] = [&[[1, 3]], &[[4, 6]], &[[7, 9]], &[[8, 8]]];
+const RANGES: [&[Range<Codepoint>]; LANGUAGE_COUNT] = [&[[1, 3]], &[[4, 6]], &[[7, 9]], &[[8, 8]], &[[16,16]]];
 
 #[cfg(not(test))]
 const TOTALS: [u32; LANGUAGE_COUNT] = {totals:?};
 
 #[cfg(test)]
-const TOTALS: [u32; LANGUAGE_COUNT] = [3, 3, 3, 1];
+const TOTALS: [u32; LANGUAGE_COUNT] = [3, 3, 3, 1, 1];
 
 #[cfg(not(test))]
 const METADATA: [Metadata; LANGUAGE_COUNT] = {metadata:?};
@@ -155,6 +155,7 @@ const METADATA: [Metadata; LANGUAGE_COUNT] = [
   Metadata {{ code: "t2", name: "test2", native_name: "ntest2" }},
   Metadata {{ code: "t3", name: "test3", native_name: "ntest3" }},
   Metadata {{ code: "t4", name: "test4", native_name: "ntest4" }},
+  Metadata {{ code: "t5", name: "test5", native_name: "ntest5" }},
 ];
 "#
     )

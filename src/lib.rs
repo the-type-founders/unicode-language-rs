@@ -37,9 +37,7 @@ where
     for [input_lower, input_upper] in codepoints {
         for i in 0..LANGUAGE_COUNT {
             for [range_lower, range_upper] in RANGES[i] {
-                if input_lower >= *range_lower && input_lower <= *range_upper
-                    || input_upper >= *range_lower && input_upper <= *range_upper
-                {
+                if input_lower <= *range_upper && *range_lower <= input_upper {
                     counts[i] += cmp::min(input_upper, *range_upper)
                         - cmp::max(input_lower, *range_lower)
                         + 1;
@@ -176,5 +174,12 @@ mod tests {
         assert_eq!(result.len(), 2);
         assert_eq!(result[0].code, "t2");
         assert_eq!(result[1].code, "t1");
+    }
+
+    #[test]
+    fn it_handles_ranges_correctly() {
+        let result = detect([[12, 20]], 0.0);
+        assert_eq!(result.len(), 1);
+        assert_eq!(result[0].code, "t5");
     }
 }
