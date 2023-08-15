@@ -27,7 +27,7 @@ struct Match {
   // Number of codepoints matched.
   count: u32,
   // Score (number of codepoints matched divided by the total).
-  score: f32,
+  score: f64,
 }
 ```
 
