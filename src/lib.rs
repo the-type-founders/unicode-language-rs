@@ -5,11 +5,11 @@ use std::cmp;
 #[derive(Debug)]
 pub struct Match {
     /// ISO 639-1 language code.
-    pub code: String,
+    pub code: &'static str,
     /// English name.
-    pub name: String,
+    pub name: &'static str,
     /// Name in native script.
-    pub native: String,
+    pub native: &'static str,
     /// Number of codepoints matched.
     pub count: u32,
     /// Score (number of codepoints matched divided by the total).
@@ -56,9 +56,9 @@ where
         let score = counts[i] as f64 / TOTALS[i] as f64;
         if score >= threshold && counts[i] > 0 {
             result.push(Match {
-                code: METADATA[i].code.to_string(),
-                name: METADATA[i].name.to_string(),
-                native: METADATA[i].native_name.to_string(),
+                code: METADATA[i].code,
+                name: METADATA[i].name,
+                native: METADATA[i].native_name,
                 count: counts[i],
                 score,
             });
