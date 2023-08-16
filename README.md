@@ -19,11 +19,11 @@ The result is a vector of `Match` structs, with the following signature:
 ```rust
 struct Match {
   // ISO 639-1 language code.
-  code: String,
+  code: &'static str,
   // English name.
-  name: String,
+  name: &'static str,
   // Name in native script.
-  native: String,
+  native: &'static str,
   // Number of codepoints matched.
   count: u32,
   // Score (number of codepoints matched divided by the total).
