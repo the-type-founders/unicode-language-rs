@@ -9,8 +9,8 @@ let codepoints = vec![[65, 121]];
 // Detect languages with a threshold of 0.5
 let results = detect(codepoints, 0.5);
 
-// results[0].code = "en"
-// results[1].code = "nl"
+// results[0].tag = "en"
+// results[1].tag = "nl"
 // ...
 ```
 
@@ -18,8 +18,8 @@ The result is a vector of `Match` structs, with the following signature:
 
 ```rust
 struct Match {
-  // ISO 639-1 language code.
-  code: &'static str,
+  // BCP 47 language tag.
+  tag: &'static str,
   // English name.
   name: &'static str,
   // Name in native script.

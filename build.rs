@@ -5,6 +5,7 @@ use std::io::Write;
 use std::path::Path;
 
 use glob::glob;
+use langtag::LanguageTag;
 use serde::{de::Error, Deserialize, Deserializer};
 
 #[derive(Clone, Debug, PartialEq)]
@@ -15,12 +16,12 @@ struct Language {
     anglicized_name: String,
     native_name: String,
     codepoints: Vec<Range>,
-    code: Option<String>,
+    tag: Option<String>,
 }
 
 #[derive(Debug)]
 pub struct Metadata {
-    pub code: String,
+    pub tag: String,
     pub name: String,
     pub native_name: String,
 }
@@ -56,7 +57,7 @@ fn parse_yaml<T: AsRef<Path>>(path: T) -> Language {
     // a string replace to patch up the data.
     let mut d: Language = serde_yaml::from_str(&s.replace("ruby/range", "Range")).unwrap();
 
-    d.code = Some(
+    d.tag = Some(
         path.file_name()
             .unwrap()
             .to_os_string()
@@ -85,8 +86,9 @@ fn main() {
 
     let metadata: Vec<Metadata> = languages
         .into_iter()
+        .filter(|l| LanguageTag::parse(l.tag.as_ref().unwrap()).is_ok())
         .map(|l| Metadata {
-            code: l.code.as_ref().unwrap().clone(),
+            tag: l.tag.as_ref().unwrap().clone(),
             name: l.anglicized_name.clone(),
             native_name: l.native_name.clone(),
         })
@@ -123,7 +125,7 @@ pub type Codepoint = u32;
 pub type Range<T> = [T; 2];
 
 struct Metadata {{
-    code: &'static str,
+    tag: &'static str,
     name: &'static str,
     native_name: &'static str,
 }}
@@ -151,11 +153,11 @@ const METADATA: [Metadata; LANGUAGE_COUNT] = {metadata:?};
 
 #[cfg(test)]
 const METADATA: [Metadata; LANGUAGE_COUNT] = [
-  Metadata {{ code: "t1", name: "test1", native_name: "ntest1" }},
-  Metadata {{ code: "t2", name: "test2", native_name: "ntest2" }},
-  Metadata {{ code: "t3", name: "test3", native_name: "ntest3" }},
-  Metadata {{ code: "t4", name: "test4", native_name: "ntest4" }},
-  Metadata {{ code: "t5", name: "test5", native_name: "ntest5" }},
+  Metadata {{ tag: "t1", name: "test1", native_name: "ntest1" }},
+  Metadata {{ tag: "t2", name: "test2", native_name: "ntest2" }},
+  Metadata {{ tag: "t3", name: "test3", native_name: "ntest3" }},
+  Metadata {{ tag: "t4", name: "test4", native_name: "ntest4" }},
+  Metadata {{ tag: "t5", name: "test5", native_name: "ntest5" }},
 ];
 "#
     )

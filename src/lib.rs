@@ -4,8 +4,8 @@ use std::cmp;
 
 #[derive(Debug)]
 pub struct Match {
-    /// ISO 639-1 language code.
-    pub code: &'static str,
+    /// BCP 47 language tag.
+    pub tag: &'static str,
     /// English name.
     pub name: &'static str,
     /// Name in native script.
@@ -56,7 +56,7 @@ where
         let score = counts[i] as f64 / TOTALS[i] as f64;
         if score >= threshold && counts[i] > 0 {
             result.push(Match {
-                code: METADATA[i].code,
+                tag: METADATA[i].tag,
                 name: METADATA[i].name,
                 native: METADATA[i].native_name,
                 count: counts[i],
@@ -86,7 +86,7 @@ mod tests {
 
         let result = detect(codepoints, 1.0);
         assert_eq!(result.len(), 1);
-        assert_eq!(result[0].code, "t1");
+        assert_eq!(result[0].tag, "t1");
         assert_eq!(result[0].name, "test1");
     }
 
@@ -96,7 +96,7 @@ mod tests {
 
         let result = detect(codepoints, 1.0);
         assert_eq!(result.len(), 1);
-        assert_eq!(result[0].code, "t1");
+        assert_eq!(result[0].tag, "t1");
         assert_eq!(result[0].name, "test1");
     }
 
@@ -110,7 +110,7 @@ mod tests {
     fn it_returns_the_test_language() {
         let result = detect([[1, 1]], 0.0);
         assert_eq!(result.len(), 1);
-        assert_eq!(result[0].code, "t1");
+        assert_eq!(result[0].tag, "t1");
         assert_eq!(result[0].name, "test1")
     }
 
@@ -124,7 +124,7 @@ mod tests {
     fn it_returns_if_threshold_is_met() {
         let result = detect([[1, 3]], 1.0);
         assert_eq!(result.len(), 1);
-        assert_eq!(result[0].code, "t1");
+        assert_eq!(result[0].tag, "t1");
         assert_eq!(result[0].name, "test1");
     }
 
@@ -132,7 +132,7 @@ mod tests {
     fn it_returns_if_threshold_is_partially_met() {
         let result = detect([[1, 2]], 0.6);
         assert_eq!(result.len(), 1);
-        assert_eq!(result[0].code, "t1");
+        assert_eq!(result[0].tag, "t1");
         assert_eq!(result[0].name, "test1");
     }
 
@@ -140,9 +140,9 @@ mod tests {
     fn it_returns_multiple_languages() {
         let result = detect([[1, 1], [4, 4]], 0.0);
         assert_eq!(result.len(), 2);
-        assert_eq!(result[0].code, "t1");
+        assert_eq!(result[0].tag, "t1");
         assert_eq!(result[0].name, "test1");
-        assert_eq!(result[1].code, "t2");
+        assert_eq!(result[1].tag, "t2");
         assert_eq!(result[1].name, "test2");
     }
 
@@ -150,9 +150,9 @@ mod tests {
     fn it_returns_overlapping_languages() {
         let result = detect([[8, 8]], 0.0);
         assert_eq!(result.len(), 2);
-        assert_eq!(result[0].code, "t4");
+        assert_eq!(result[0].tag, "t4");
         assert_eq!(result[0].name, "test4");
-        assert_eq!(result[1].code, "t3");
+        assert_eq!(result[1].tag, "t3");
         assert_eq!(result[1].name, "test3");
     }
 
@@ -160,10 +160,10 @@ mod tests {
     fn it_returns_correct_counts_on_partial_range_matches() {
         let result = detect([[3, 5]], 0.0);
         assert_eq!(result.len(), 2);
-        assert_eq!(result[0].code, "t2");
+        assert_eq!(result[0].tag, "t2");
         assert_eq!(result[0].name, "test2");
         assert_eq!(result[0].count, 2);
-        assert_eq!(result[1].code, "t1");
+        assert_eq!(result[1].tag, "t1");
         assert_eq!(result[1].name, "test1");
         assert_eq!(result[1].count, 1);
     }
@@ -172,14 +172,14 @@ mod tests {
     fn it_returns_sorted_results() {
         let result = detect([[1, 1], [4, 6]], 0.0);
         assert_eq!(result.len(), 2);
-        assert_eq!(result[0].code, "t2");
-        assert_eq!(result[1].code, "t1");
+        assert_eq!(result[0].tag, "t2");
+        assert_eq!(result[1].tag, "t1");
     }
 
     #[test]
     fn it_handles_ranges_correctly() {
         let result = detect([[12, 20]], 0.0);
         assert_eq!(result.len(), 1);
-        assert_eq!(result[0].code, "t5");
+        assert_eq!(result[0].tag, "t5");
     }
 }
