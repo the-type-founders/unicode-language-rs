@@ -76,6 +76,7 @@ fn main() {
         .unwrap()
         .map(Result::unwrap)
         .map(parse_yaml)
+        .filter(|l| LanguageTag::parse(l.tag.as_ref().unwrap()).is_ok())
         .collect();
 
     let ranges: Vec<Vec<Range>> = languages.iter().map(|l| l.codepoints.to_vec()).collect();
@@ -86,7 +87,6 @@ fn main() {
 
     let metadata: Vec<Metadata> = languages
         .into_iter()
-        .filter(|l| LanguageTag::parse(l.tag.as_ref().unwrap()).is_ok())
         .map(|l| Metadata {
             tag: l.tag.as_ref().unwrap().clone(),
             name: l.anglicized_name.clone(),
