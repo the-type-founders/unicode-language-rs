@@ -55,7 +55,7 @@ fn parse_yaml<T: AsRef<Path>>(path: T) -> Language {
     // The Serde YAML parser expects YAML types to have names that are valid
     // Rust identifiers. Sadly, that is not the case here, so we manually perform
     // a string replace to patch up the data.
-    let mut d: Language = serde_yaml::from_str(&s.replace("ruby/range", "Range")).unwrap();
+    let mut d: Language = serde_yml::from_str(&s.replace("ruby/range", "Range")).unwrap();
 
     d.tag = Some(
         path.file_name()

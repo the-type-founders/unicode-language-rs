@@ -1,6 +1,6 @@
 [package]
 name = "unicode-language"
-version = "2.0.1"
+version = "2.0.2"
 edition = "2021"
 build = "build.rs"
 license = "Apache-2.0"
@@ -16,5 +16,5 @@ path = "src/lib.rs"
 [build-dependencies]
 glob = "0.3.1"
 serde = { version = "1.0.175", features = ["derive"] }
-serde_yaml = "0.9.25"
+serde_yml = "0.0.9"
 langtag = "0.3.4"
