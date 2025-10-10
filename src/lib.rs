@@ -25,7 +25,7 @@ pub struct Match {
 ///   must not contain overlapping ranges and must be sorted in
 ///   ascending order.
 /// * `threshold` - The minimum score a language must have to be
-/// returned as a match. Value must be between 0 and 1.
+///   returned as a match. Value must be between 0 and 1.
 ///
 /// Returns a vector of language matches.
 pub fn detect<T>(codepoints: T, threshold: f64) -> Vec<Match>
