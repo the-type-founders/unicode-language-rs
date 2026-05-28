@@ -57,11 +57,9 @@ impl<'l> Deserialize<'l> for Range {
 }
 
 // The speakeasy data files are Ruby YAML and encode ranges as tagged scalars,
-// for example `- !ruby/range 65..90`. serde_yml 0.0.13 preserves unknown
-// custom tags instead of passing the scalar through as a plain string, but this
-// build script does not need Ruby tag semantics. It only needs the scalar range
-// text, so normalize tagged ranges into quoted YAML strings and leave ordinary
-// numeric codepoints alone.
+// for example `- !ruby/range 65..90`. This build script does not need Ruby tag
+// semantics; it only needs the scalar range text. Normalize tagged ranges into
+// quoted YAML strings and leave ordinary numeric codepoints alone.
 fn normalize(value: &str) -> String {
     value
         .lines()
@@ -83,7 +81,7 @@ fn parse<T: AsRef<Path>>(path: T) -> Language {
 
     let s = read_to_string(path).unwrap();
 
-    let mut d: Language = serde_yml::from_str(&normalize(&s)).unwrap();
+    let mut d: Language = serde_saphyr::from_str(&normalize(&s)).unwrap();
 
     d.tag = Some(
         path.file_name()
