@@ -1,4 +1,4 @@
-# Unicode Language
+# Unicode Language [![Package][package-img]][package-url] [![Documentation][documentation-img]][documentation-url] [![Build][build-img]][build-url]
 
 This library detects language support given a list of Unicode codepoints. This is primarily useful for finding out what languages a font supports.
 
@@ -36,3 +36,10 @@ The language data is derived from [Adobe Font's speakeasy library](https://githu
 ## License
 
 This library is licensed under the Apache-2.0 license. Copyright 2023, [The Type Founders](https://thetypefounders.com).
+
+[build-img]: https://github.com/the-type-founders/unicode-language-rs/actions/workflows/build.yml/badge.svg
+[build-url]: https://github.com/the-type-founders/unicode-language-rs/actions/workflows/build.yml
+[documentation-img]: https://docs.rs/unicode-language/badge.svg
+[documentation-url]: https://docs.rs/unicode-language
+[package-img]: https://img.shields.io/crates/v/unicode-language.svg
+[package-url]: https://crates.io/crates/unicode-language
