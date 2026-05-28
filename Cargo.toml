@@ -8,6 +8,7 @@ description = "A library to detect language coverage given a list of codepoints.
 documentation = "https://docs.rs/unicode-language"
 homepage = "https://github.com/the-type-founders/unicode-language-rs"
 repository = "https://github.com/the-type-founders/unicode-language-rs"
+categories = ["text-processing"]
 keywords = ["unicode", "language"]
 build = "build.rs"
 
