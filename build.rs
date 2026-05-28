@@ -33,24 +33,20 @@ impl<'l> Deserialize<'l> for Range {
     {
         #[derive(Deserialize)]
         #[serde(untagged)]
-        enum Input {
+        enum Value {
             Number(u32),
             Text(String),
         }
 
-        match Input::deserialize(deserializer)? {
-            Input::Number(value) => Ok(Range(value, value)),
-            Input::Text(value) => {
-                if let Some((lower, upper)) = value.split_once("..") {
-                    let lower = lower.parse::<u32>().map_err(T::Error::custom)?;
-                    let upper = upper.parse::<u32>().map_err(T::Error::custom)?;
-                    Ok(Range(lower, upper))
-                } else {
-                    value
-                        .parse::<u32>()
-                        .map(|value| Range(value, value))
-                        .map_err(T::Error::custom)
-                }
+        match Value::deserialize(deserializer)? {
+            Value::Number(value) => Ok(Range(value, value)),
+            Value::Text(value) => {
+                let (lower, upper) = value
+                    .split_once("..")
+                    .ok_or_else(|| T::Error::custom("expected a range"))?;
+                let lower = lower.parse::<u32>().map_err(T::Error::custom)?;
+                let upper = upper.parse::<u32>().map_err(T::Error::custom)?;
+                Ok(Range(lower, upper))
             }
         }
     }
