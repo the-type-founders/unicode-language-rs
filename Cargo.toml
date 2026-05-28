@@ -21,5 +21,5 @@ glob = "0.3"
 serde = { version = "1", features = ["derive"] }
 # Keep this exact while serde-saphyr is 0.0.x; parser behavior changes can
 # affect the build script's Ruby YAML input.
-serde-saphyr = "=0.0.27"
+serde-saphyr = { version = "=0.0.27", default-features = false, features = ["deserialize"] }
 langtag = "1"
