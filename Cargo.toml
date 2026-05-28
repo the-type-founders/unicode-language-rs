@@ -1,7 +1,7 @@
 [package]
 name = "unicode-language"
 version = "2.2.0"
-edition = "2021"
+edition = "2024"
 license = "Apache-2.0"
 authors = ["Bram Stein <b.l.stein@gmail.com>"]
 description = "A library to detect language coverage given a list of codepoints."

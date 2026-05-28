@@ -1,12 +1,12 @@
 use std::env;
-use std::fs::read_to_string;
 use std::fs::File;
+use std::fs::read_to_string;
 use std::io::Write;
 use std::path::Path;
 
 use glob::glob;
 use langtag::LangTag;
-use serde::{de::Error, Deserialize, Deserializer};
+use serde::{Deserialize, Deserializer, de::Error};
 
 #[derive(Clone, Debug, PartialEq)]
 struct Range(u32, u32);
