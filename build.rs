@@ -5,7 +5,7 @@ use std::io::Write;
 use std::path::Path;
 
 use glob::glob;
-use langtag::LanguageTag;
+use langtag::LangTag;
 use serde::{de::Error, Deserialize, Deserializer};
 
 #[derive(Clone, Debug, PartialEq)]
@@ -31,31 +31,59 @@ impl<'l> Deserialize<'l> for Range {
     where
         T: Deserializer<'l>,
     {
-        let s: &str = Deserialize::deserialize(deserializer)?;
+        #[derive(Deserialize)]
+        #[serde(untagged)]
+        enum Input {
+            Number(u32),
+            Text(String),
+        }
 
-        if s.contains("..") {
-            s.split("..")
-                .map(|x| x.parse::<u32>())
-                .collect::<Result<Vec<_>, _>>()
-                .map(|v| Range(v[0], v[1]))
-                .map_err(T::Error::custom)
-        } else {
-            s.parse::<u32>()
-                .map(|i| Range(i, i))
-                .map_err(T::Error::custom)
+        match Input::deserialize(deserializer)? {
+            Input::Number(value) => Ok(Range(value, value)),
+            Input::Text(value) => {
+                if let Some((lower, upper)) = value.split_once("..") {
+                    let lower = lower.parse::<u32>().map_err(T::Error::custom)?;
+                    let upper = upper.parse::<u32>().map_err(T::Error::custom)?;
+                    Ok(Range(lower, upper))
+                } else {
+                    value
+                        .parse::<u32>()
+                        .map(|value| Range(value, value))
+                        .map_err(T::Error::custom)
+                }
+            }
         }
     }
 }
 
-fn parse_yaml<T: AsRef<Path>>(path: T) -> Language {
+// The speakeasy data files are Ruby YAML and encode ranges as tagged scalars,
+// for example `- !ruby/range 65..90`. serde_yml 0.0.13 preserves unknown
+// custom tags instead of passing the scalar through as a plain string, but this
+// build script does not need Ruby tag semantics. It only needs the scalar range
+// text, so normalize tagged ranges into quoted YAML strings and leave ordinary
+// numeric codepoints alone.
+fn normalize(value: &str) -> String {
+    value
+        .lines()
+        .map(|line| {
+            let Some(tag_start) = line.find("!ruby/range ") else {
+                return line.to_string();
+            };
+            let prefix = &line[..tag_start];
+            let rest = &line[tag_start + "!ruby/range ".len()..];
+            let range = rest.split_whitespace().next().unwrap();
+            format!("{prefix}\"{range}\"")
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+fn parse<T: AsRef<Path>>(path: T) -> Language {
     let path = path.as_ref();
 
     let s = read_to_string(path).unwrap();
 
-    // The Serde YAML parser expects YAML types to have names that are valid
-    // Rust identifiers. Sadly, that is not the case here, so we manually perform
-    // a string replace to patch up the data.
-    let mut d: Language = serde_yml::from_str(&s.replace("ruby/range", "Range")).unwrap();
+    let mut d: Language = serde_yml::from_str(&normalize(&s)).unwrap();
 
     d.tag = Some(
         path.file_name()
@@ -75,8 +103,8 @@ fn main() {
     let languages: Vec<Language> = glob("./speakeasy/data/*")
         .unwrap()
         .map(Result::unwrap)
-        .map(parse_yaml)
-        .filter(|l| LanguageTag::parse(l.tag.as_ref().unwrap()).is_ok())
+        .map(parse)
+        .filter(|l| LangTag::new(l.tag.as_ref().unwrap()).is_ok())
         .collect();
 
     let ranges: Vec<Vec<Range>> = languages.iter().map(|l| l.codepoints.to_vec()).collect();

@@ -1,6 +1,6 @@
 [package]
 name = "unicode-language"
-version = "2.1.0"
+version = "2.2.0"
 edition = "2021"
 build = "build.rs"
 license = "Apache-2.0"
@@ -14,7 +14,9 @@ name = "unicode_language"
 path = "src/lib.rs"
 
 [build-dependencies]
-glob = "0.3.1"
-serde = { version = "1.0.175", features = ["derive"] }
-serde_yml = "0.0"
-langtag = "0.3.4"
+glob = "0.3"
+serde = { version = "1", features = ["derive"] }
+# Keep this exact: serde_yml is deprecated, and 0.0.x parser behavior has
+# already changed in a way that breaks the build script's Ruby YAML input.
+serde_yml = "=0.0.13"
+langtag = "1"
